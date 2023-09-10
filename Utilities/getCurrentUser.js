@@ -1,5 +1,4 @@
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 
 const getCurrentUser = () => {
   const loggedInUser = auth().currentUser;
@@ -14,7 +13,5 @@ const getCurrentUser = () => {
     };
   } else return false;
 };
-
-
 
 export default getCurrentUser;

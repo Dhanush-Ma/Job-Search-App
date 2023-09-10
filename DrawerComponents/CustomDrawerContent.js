@@ -6,12 +6,15 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import {Context} from '../Context/Context';
+import { AuthContext } from '../Context/AuthContext';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import logout from '../Utilities/logout';
 
 const CustomDrawerContent = props => {
   const {user} = useContext(Context);
+  const {setAuth} = useContext(AuthContext);
+
   const windowHeight = Dimensions.get('window').height;
 
   return (
@@ -19,7 +22,7 @@ const CustomDrawerContent = props => {
       <ImageBackground
         source={require('../assets/background.jpg')}
         style={{height: 200}}
-        className="justify-end items-center pb-5">
+        className="justify-end items-center pl-5 pb-5">
         {user.url ? (
           <Image
             source={{uri: user.url}}
@@ -44,7 +47,7 @@ const CustomDrawerContent = props => {
           <View>
             <DrawerItem
               label="Logout"
-              onPress={() => logout(props.navigation)}
+              onPress={() => logout(setAuth)}
               icon={({focused, color, size}) => (
                 <AntDesignIcon name="logout" size={24} color={'#121212'} />
               )}

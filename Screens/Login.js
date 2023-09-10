@@ -4,12 +4,15 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from '../Utilities/modal';
 import googleAuthenticate from '../Utilities/googleAuthenticate';
 import auth from '@react-native-firebase/auth';
+import {AuthContext} from '../Context/AuthContext';
+import styles from '../Utilities/globals';
 
 const Login = ({navigation}) => {
   const [modal, setModal] = useState(false);
@@ -19,13 +22,12 @@ const Login = ({navigation}) => {
   });
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const {setAuth} = useContext(AuthContext);
 
   const setErrorInfo = msg => {
     setErrMsg(msg);
     setModal(true);
   };
-
-  // getCurrentUser();
 
   const handleChange = (text, attr) => {
     setFormData({
@@ -53,11 +55,11 @@ const Login = ({navigation}) => {
       .then(() => {
         setLoading(false);
         setFormData({username: '', email: '', password: ''});
-        navigation.navigate('Home');
+        setAuth(true);
       })
       .catch(error => {
         setLoading(false);
-        console.log(error);
+        console.log("login err",error);
         if (error.code === 'auth/user-not-found') {
           setErrorInfo('User not registered!');
         }
@@ -70,16 +72,23 @@ const Login = ({navigation}) => {
           setErrorInfo('Invalid Password');
         }
       });
-
   };
 
   return (
-    <View className="bg-background h-full p-12 items-center justify-center">
-      <Text className="text-2xl text-center">Login</Text>
-      <Text className="text-center">Please login to explore more</Text>
+    <View className="bg-background h-full px-12 items-center justify-center">
+      <View>
+        <Image
+          source={require('../assets/login.png')}
+          style={{height: 200, width: 200}}
+          resizeMode="contain"
+        />
+      </View>
+      <Text style={{color: styles.color}} className="text-center mt-5 text-xl">
+        Please login to continue exploring!
+      </Text>
       <View className="mb-6">
-        <View className="border-2 border-[#585858] w-72 flex-row items-center px-3 my-5">
-          <MaterialCommunityIcons name="email" size={18} />
+        <View className="border-2 border-[#efefef] w-72 flex-row items-center px-3 my-5">
+          <MaterialCommunityIcons name="email" size={18} color="#fff" />
           <TextInput
             name="email"
             className="ml-2 pr-6 w-full"
@@ -89,8 +98,8 @@ const Login = ({navigation}) => {
             onChangeText={text => handleChange(text, 'email')}
           />
         </View>
-        <View className="border-2 border-[#585858] w-72 flex-row items-center px-3">
-          <MaterialCommunityIcons name="security" size={18} />
+        <View className="border-2 border-[#efefef] w-72 flex-row items-center px-3">
+          <MaterialCommunityIcons name="security" size={18} color="#fff" />
           <TextInput
             name="password"
             className="ml-2 pr-6 w-full"
@@ -106,33 +115,49 @@ const Login = ({navigation}) => {
         className="bg-customColor1 py-3 rounded-md w-full h-12 justify-center"
         onPress={submitData}>
         {!loading ? (
-          <Text className="text-center font-bold text-xl">Login</Text>
+          <Text
+            style={{color: styles.color}}
+            className="text-center font-bold text-xl">
+            Login
+          </Text>
         ) : (
           <ActivityIndicator size="large" color="#ffffff" />
         )}
       </TouchableOpacity>
       <Text
+        style={{color: styles.color}}
         className="text-center mt-3"
         onPress={() => navigation.navigate('Register')}>
         Don't have have an account? Sign In
       </Text>
-      <View className="flex-row items-center my-7">
+      {/* <View className="flex-row items-center my-7">
         <View style={{flex: 1, height: 1, backgroundColor: 'grey'}} />
-        <Text className="text-center mx-3"> OR </Text>
+        <Text style={{color: styles.color}} className="text-center mx-3">
+          {' '}
+          OR{' '}
+        </Text>
         <View style={{flex: 1, height: 1, backgroundColor: 'grey'}} />
       </View>
       <View>
         <View>
           <TouchableOpacity
-            className="flex-row items-center justify-center p-3 border-2 border-[#585858]"
+            className="flex-row items-center justify-center p-3 border-2 border-[#efefef]"
             onPress={() => {
               googleAuthenticate(navigation);
             }}>
-            <MaterialCommunityIcons name="google" size={32} />
-            <Text className="font-bold text-xl ml-6">Sign Up with Google</Text>
+            <Image
+              source={require('../assets/google.png')}
+              style={{height: 32, width: 32}}
+              resizeMode="contain"
+            />
+            <Text
+              style={{color: styles.color}}
+              className="font-bold text-xl ml-6">
+              Continue with Google
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
       {modal && <Modal title={errMsg} setModal={setModal} />}
     </View>
   );

@@ -3,27 +3,30 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+import getCurrentUser from './getCurrentUser';
 
-GoogleSignin.configure({
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  webClientId:
-    '625286252502-linh68flj4oos1mtf4iiv7u0dqpa98b1.apps.googleusercontent.com',
-  offlineAccess: true,
-});
 
-async function onGoogleButtonPress() {
+
+async function googleAuthenticate() {
   console.log('hered');
   try {
     // Check if your device supports Google Play
+    GoogleSignin.configure({
+      scopes: ['email'],
+      webClientId:
+        '625286252502-linh68flj4oos1mtf4iiv7u0dqpa98b1.apps.googleusercontent.com',
+      offlineAccess: true,
+    });
+
     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
     // Get the users ID token
     const {idToken} = await GoogleSignin.signIn();
-
+    console.log('idtoken', idToken);
     // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    // const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
+    // // Sign-in the user with the credential
+    // return auth().signInWithCredential(googleCredential);
   } catch (error) {
     // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
     //   // user cancelled the login flow
@@ -36,20 +39,20 @@ async function onGoogleButtonPress() {
     //   console.log(error, 'here3');
     // } else {
     // some other error
-    console.log(error, 'here4');
+    console.log(error, 'here at catch error block');
     // }
   }
 }
 
-async function googleAuthenticate(navigation) {
-  console.log('google');
+// async function googleAuthenticate(navigation) {
+//   console.log('google authentication');
 
-  onGoogleButtonPress()
-    .then(() => {
-      //navigation.navigate('Home');
-      console.log('Signed in with Google!');
-    })
-    .catch(err => console.log(err));
-}
+//   onGoogleButtonPress()
+//     .then(() => {
+//       console.log('Signed in with Google!');
+//       getCurrentUser();
+//     })
+//     .catch(err => console.log(err));
+// }
 
 export default googleAuthenticate;

@@ -12,10 +12,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import BackButton from '../Components/BackButton';
 import {Context} from '../Context/Context';
 import firestore from '@react-native-firebase/firestore';
+import LinearGradient from 'react-native-linear-gradient';
+import styles from '../Utilities/globals';
 
 const Job = ({navigation, route}) => {
   const {data, jobCity} = route.params;
-  const {userDetails, setUserDetails} = useContext(Context);
+  const {userDetails} = useContext(Context);
   const [imageLoading, setImageLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Description');
@@ -26,7 +28,7 @@ const Job = ({navigation, route}) => {
       .collection('Users')
       .doc(`${userDetails.id}`)
       .update({jobsVisted: userDetails.jobsVisted + 1});
-      
+
     Linking.openURL(data.job_apply_link).catch(err =>
       console.error("Couldn't load page", err),
     );
@@ -66,22 +68,40 @@ const Job = ({navigation, route}) => {
   const getInfo = () => {
     if (selectedOption === 'Description') {
       return (
-        <Text className="text-[#fff] text-sm">{data.job_description}</Text>
+        <Text style={{color: styles.color}} className="text-[#fff] text-sm">
+          {data.job_description}
+        </Text>
       );
     }
     if (selectedOption === 'Requirements') {
       if (!data.job_required_skills)
         return (
           <View className="flex-row items-start mb-3 justify-start">
-            <Text className="text-base font-bold mr-2">•</Text>
-            <Text className="text-[#fff] text-base  flex-row">N/A</Text>
+            <Text
+              style={{color: styles.color}}
+              className="text-base font-bold mr-2">
+              •
+            </Text>
+            <Text
+              style={{color: styles.color}}
+              className="text-[#fff] text-base  flex-row">
+              N/A
+            </Text>
           </View>
         );
 
       return data.job_required_skills.map((skill, idx) => (
         <View key={idx} className="flex-row items-start mb-3 justify-start">
-          <Text className="text-base font-bold mr-2">•</Text>
-          <Text className="text-[#fff] text-base  flex-row">{skill}</Text>
+          <Text
+            style={{color: styles.color}}
+            className="text-base font-bold mr-2">
+            •
+          </Text>
+          <Text
+            style={{color: styles.color}}
+            className="text-[#fff] text-base  flex-row">
+            {skill}
+          </Text>
         </View>
       ));
     }
@@ -96,8 +116,16 @@ const Job = ({navigation, route}) => {
       if (educationDetails.length == 0) {
         return (
           <View className="flex-row items-start mb-3 justify-start">
-            <Text className="text-base font-bold mr-2">•</Text>
-            <Text className="text-[#fff] text-base  flex-row">N/A</Text>
+            <Text
+              style={{color: styles.color}}
+              className="text-base font-bold mr-2">
+              •
+            </Text>
+            <Text
+              style={{color: styles.color}}
+              className="text-[#fff] text-base  flex-row">
+              N/A
+            </Text>
           </View>
         );
       } else {
@@ -107,8 +135,14 @@ const Job = ({navigation, route}) => {
               <View
                 key={idx}
                 className="flex-row items-start mb-3 justify-start">
-                <Text className="text-base font-bold mr-2">•</Text>
-                <Text className="text-[#fff] text-base capitalize  flex-row">
+                <Text
+                  style={{color: styles.color}}
+                  className="text-base font-bold mr-2">
+                  •
+                </Text>
+                <Text
+                  style={{color: styles.color}}
+                  className="text-[#fff] text-base capitalize  flex-row">
                   {detail.split('_').join(' ')}
                 </Text>
               </View>
@@ -125,7 +159,11 @@ const Job = ({navigation, route}) => {
 
   return (
     <View className="bg-background h-full p-5 justify-between">
-      <BackButton navigation={navigation} component="Home" />
+      <BackButton
+        navigation={navigation}
+        component="Home"
+        colorSpecify={true}
+      />
       <View className="justify-center items-center mt-3">
         <View
           style={{width: 70, height: 70}}
@@ -151,11 +189,19 @@ const Job = ({navigation, route}) => {
             }}
           />
         </View>
-        <Text className="mt-3 font-bold text-xl">{data.job_title}</Text>
-        <Text className="m-2 font-bold text-lg">{data.employer_name}</Text>
+        <Text style={{color: styles.color}} className="mt-3 font-bold text-xl text-center">
+          {data.job_title}
+        </Text>
+        <Text style={{color: styles.color}} className="m-2 font-bold text-lg">
+          {data.employer_name}
+        </Text>
         <View className="flex-row items-center mb-3">
-          <Ionicons name="ios-location-sharp" size={24} />
-          <Text className=" ml-1 font-semibold text-base">{jobCity}</Text>
+          <Ionicons name="ios-location-sharp" size={24} color="#fff" />
+          <Text
+            style={{color: styles.color}}
+            className=" ml-1 font-semibold text-base">
+            {jobCity}
+          </Text>
         </View>
       </View>
       <View className="flex-1">
@@ -166,25 +212,29 @@ const Job = ({navigation, route}) => {
               onPress={() => {
                 setSelectedOption(option);
               }}>
-              <View
-                className={
+              <LinearGradient
+                className={`bg-customColor1 w-max py-3 px-3 rounded-full mx-2 justify-center items-center ${
+                  selectedOption !== option && 'border-2 border-customColor1'
+                } `}
+                colors={
                   selectedOption === option
-                    ? 'bg-customColor1 w-max py-3 px-3 rounded-full mx-2 justify-center items-center'
-                    : 'border-2 border-customColor1 rounded-full w-max py-3 px-3 mx-2 text-[#fff] justify-center items-center'
-                }>
+                    ? ['#cc2b5e', '#753a88']
+                    : ['#1F1D36', '#1F1D36']
+                }
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}>
                 <Text
-                  className={
-                    selectedOption === option
-                      ? 'text-background font-bold text-base'
-                      : 'text-[#fff] font-bold text-base'
-                  }>
+                  style={{color: styles.color}}
+                  className="text-[#fff] font-bold text-base">
                   {option}
                 </Text>
-              </View>
+              </LinearGradient>
             </TouchableWithoutFeedback>
           ))}
         </View>
-        <ScrollView className="mt-5">{getInfo()}</ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false} className="mt-5">
+          {getInfo()}
+        </ScrollView>
       </View>
       <View className="mt-3 flex-row items-center justify-between bottom-0 w-full mx-auto">
         <TouchableWithoutFeedback
@@ -200,7 +250,11 @@ const Job = ({navigation, route}) => {
         <TouchableOpacity
           onPress={openJobLink}
           className="bg-customColor1 py-4 rounded-lg w-9/12">
-          <Text className="text-center font-bold text-xl">Apply to Job</Text>
+          <Text
+            style={{color: styles.color}}
+            className="text-center font-bold text-xl">
+            Apply to Job
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -208,3 +262,4 @@ const Job = ({navigation, route}) => {
 };
 
 export default Job;
+
